@@ -45,4 +45,13 @@ defmodule MyEnum do
   defp _rest(list, 0, n) when n > 0, do: list
   defp _rest([_head | tail], n, m), do: _rest(tail, n-1, m-1)
 
+  #
+  # take
+  #
+  def take(list, n) when n < length(list) do
+    _take(list, n)
+  end
+  def take(list, _), do: list
+  defp _take(_, 0), do: []
+  defp _take([head | tail], n), do: [ head | _take(tail, n-1)]
 end
