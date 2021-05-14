@@ -1,22 +1,26 @@
 defmodule MyProcess do
   def token do
+      betty = spawn(MyProcess, :person, [])
+      fred = spawn(MyProcess, :person, [])
+
+      send betty, {self(), "betty"}
+      send fred, {self(), "fred"}
+
     receive do
-      {sender, str} ->
-        send sender, { :ok, "Hello #{str}"}
+      {_sender, "betty"} ->
+        IO.puts "Betty replied first!"
+      {_sender, "fred"} ->
+        IO.puts "Fred replied first!"
+    end
+  end
+
+  def person do
+    receive do
+      {sender, msg} ->
+        IO.puts msg
+        send sender, {self(), msg}
     end
   end
 end
 
-pid1 = spawn(MyProcess, :token, [])
-send pid1, {self(), "fred"}
-receive do
-  {:ok, str} ->
-    IO.puts str
-end
-
-pid2 = spawn(MyProcess, :token, [])
-send pid2, {self(), "betty"}
-receive do
-  {:ok, str} ->
-    IO.puts str
-end
+MyProcess.token
